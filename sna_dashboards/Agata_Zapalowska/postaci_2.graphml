@@ -1,0 +1,623 @@
+<?xml version='1.0' encoding='utf-8'?>
+<graphml xmlns="http://graphml.graphdrawing.org/xmlns" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://graphml.graphdrawing.org/xmlns http://graphml.graphdrawing.org/xmlns/1.0/graphml.xsd"><key id="d1" for="edge" attr.name="weight" attr.type="long"/>
+<key id="d0" for="node" attr.name="label" attr.type="string"/>
+<graph edgedefault="undirected"><node id="CHIEF">
+  <data key="d0">CHIEF</data>
+</node>
+<node id="WILLARD">
+  <data key="d0">WILLARD</data>
+</node>
+<node id="CHEF">
+  <data key="d0">CHEF</data>
+</node>
+<node id="LANCE">
+  <data key="d0">LANCE</data>
+</node>
+<node id="KILGORE">
+  <data key="d0">KILGORE</data>
+</node>
+<node id="KURTZ">
+  <data key="d0">KURTZ</data>
+</node>
+<node id="CLEAN">
+  <data key="d0">CLEAN</data>
+</node>
+<node id="SOLDIER">
+  <data key="d0">SOLDIER</data>
+</node>
+<node id="COLBY">
+  <data key="d0">COLBY</data>
+</node>
+<node id="GASTON">
+  <data key="d0">GASTON</data>
+</node>
+<node id="ROXANNE">
+  <data key="d0">ROXANNE</data>
+</node>
+<node id="MOONBY">
+  <data key="d0">MOONBY</data>
+</node>
+<node id="PHILIPPE">
+  <data key="d0">PHILIPPE</data>
+</node>
+<node id="CIVILIAN">
+  <data key="d0">CIVILIAN</data>
+</node>
+<node id="COLONEL">
+  <data key="d0">COLONEL</data>
+</node>
+<node id="MAJOR">
+  <data key="d0">MAJOR</data>
+</node>
+<node id="KURTZ'S WIFE">
+  <data key="d0">KURTZ'S WIFE</data>
+</node>
+<node id="OTHERS">
+  <data key="d0">OTHERS</data>
+</node>
+<node id="MIKE">
+  <data key="d0">MIKE</data>
+</node>
+<node id="RADIO">
+  <data key="d0">RADIO</data>
+</node>
+<node id="NIGHT">
+  <data key="d0">NIGHT</data>
+</node>
+<node id="LIEUTENANT">
+  <data key="d0">LIEUTENANT</data>
+</node>
+<node id="ACCOUNTANT">
+  <data key="d0">ACCOUNTANT</data>
+</node>
+<node id="LAWYER">
+  <data key="d0">LAWYER</data>
+</node>
+<node id="CHARLIE">
+  <data key="d0">CHARLIE</data>
+</node>
+<node id="AGENT">
+  <data key="d0">AGENT</data>
+</node>
+<node id="PILOT">
+  <data key="d0">PILOT</data>
+</node>
+<node id="CATHY">
+  <data key="d0">CATHY</data>
+</node>
+<node id="LYNDA">
+  <data key="d0">LYNDA</data>
+</node>
+<node id="TERRI">
+  <data key="d0">TERRI</data>
+</node>
+<node id="AUSTRALIAN">
+  <data key="d0">AUSTRALIAN</data>
+</node>
+<node id="CAPTAIN">
+  <data key="d0">CAPTAIN</data>
+</node>
+<node id="SERGEANT">
+  <data key="d0">SERGEANT</data>
+</node>
+<node id="SPOTTER">
+  <data key="d0">SPOTTER</data>
+</node>
+<node id="TOM">
+  <data key="d0">TOM</data>
+</node>
+<node id="ROACH">
+  <data key="d0">ROACH</data>
+</node>
+<node id="GUNNER">
+  <data key="d0">GUNNER</data>
+</node>
+<node id="OTHER SOLDIER">
+  <data key="d0">OTHER SOLDIER</data>
+</node>
+<node id="FRENCHMAN">
+  <data key="d0">FRENCHMAN</data>
+</node>
+<node id="FOURTH SPECIAL FORCES">
+  <data key="d0">FOURTH SPECIAL FORCES</data>
+</node>
+<node id="NU MUNG BA">
+  <data key="d0">NU MUNG BA</data>
+</node>
+<node id="MAN">
+  <data key="d0">MAN</data>
+</node>
+<node id="GUARD">
+  <data key="d0">GUARD</data>
+</node>
+<node id="CO-PILOT">
+  <data key="d0">CO-PILOT</data>
+</node>
+<edge source="CHIEF" target="WILLARD">
+  <data key="d1">30</data>
+</edge>
+<edge source="CHIEF" target="CHEF">
+  <data key="d1">16</data>
+</edge>
+<edge source="CHIEF" target="LANCE">
+  <data key="d1">13</data>
+</edge>
+<edge source="CHIEF" target="CLEAN">
+  <data key="d1">9</data>
+</edge>
+<edge source="CHIEF" target="GASTON">
+  <data key="d1">3</data>
+</edge>
+<edge source="CHIEF" target="KILGORE">
+  <data key="d1">3</data>
+</edge>
+<edge source="CHIEF" target="PHILIPPE">
+  <data key="d1">2</data>
+</edge>
+<edge source="CHIEF" target="SOLDIER">
+  <data key="d1">2</data>
+</edge>
+<edge source="CHIEF" target="AGENT">
+  <data key="d1">1</data>
+</edge>
+<edge source="CHIEF" target="CATHY">
+  <data key="d1">1</data>
+</edge>
+<edge source="CHIEF" target="SERGEANT">
+  <data key="d1">1</data>
+</edge>
+<edge source="CHIEF" target="ROXANNE">
+  <data key="d1">1</data>
+</edge>
+<edge source="CHIEF" target="SPOTTER">
+  <data key="d1">1</data>
+</edge>
+<edge source="CHIEF" target="TOM">
+  <data key="d1">1</data>
+</edge>
+<edge source="CHIEF" target="ROACH">
+  <data key="d1">1</data>
+</edge>
+<edge source="CHIEF" target="GUNNER">
+  <data key="d1">1</data>
+</edge>
+<edge source="CHIEF" target="LIEUTENANT">
+  <data key="d1">1</data>
+</edge>
+<edge source="CHIEF" target="LYNDA">
+  <data key="d1">1</data>
+</edge>
+<edge source="CHIEF" target="MIKE">
+  <data key="d1">1</data>
+</edge>
+<edge source="CHIEF" target="OTHER SOLDIER">
+  <data key="d1">1</data>
+</edge>
+<edge source="CHIEF" target="OTHERS">
+  <data key="d1">1</data>
+</edge>
+<edge source="CHIEF" target="FRENCHMAN">
+  <data key="d1">1</data>
+</edge>
+<edge source="WILLARD" target="CHEF">
+  <data key="d1">23</data>
+</edge>
+<edge source="WILLARD" target="LANCE">
+  <data key="d1">22</data>
+</edge>
+<edge source="WILLARD" target="KILGORE">
+  <data key="d1">13</data>
+</edge>
+<edge source="WILLARD" target="KURTZ">
+  <data key="d1">12</data>
+</edge>
+<edge source="WILLARD" target="CLEAN">
+  <data key="d1">9</data>
+</edge>
+<edge source="WILLARD" target="SOLDIER">
+  <data key="d1">5</data>
+</edge>
+<edge source="WILLARD" target="COLBY">
+  <data key="d1">5</data>
+</edge>
+<edge source="WILLARD" target="GASTON">
+  <data key="d1">4</data>
+</edge>
+<edge source="WILLARD" target="ROXANNE">
+  <data key="d1">4</data>
+</edge>
+<edge source="WILLARD" target="MOONBY">
+  <data key="d1">4</data>
+</edge>
+<edge source="WILLARD" target="CIVILIAN">
+  <data key="d1">3</data>
+</edge>
+<edge source="WILLARD" target="PHILIPPE">
+  <data key="d1">3</data>
+</edge>
+<edge source="WILLARD" target="MAJOR">
+  <data key="d1">2</data>
+</edge>
+<edge source="WILLARD" target="KURTZ'S WIFE">
+  <data key="d1">2</data>
+</edge>
+<edge source="WILLARD" target="COLONEL">
+  <data key="d1">2</data>
+</edge>
+<edge source="WILLARD" target="NIGHT">
+  <data key="d1">2</data>
+</edge>
+<edge source="WILLARD" target="MIKE">
+  <data key="d1">2</data>
+</edge>
+<edge source="WILLARD" target="LIEUTENANT">
+  <data key="d1">2</data>
+</edge>
+<edge source="WILLARD" target="ACCOUNTANT">
+  <data key="d1">1</data>
+</edge>
+<edge source="WILLARD" target="CATHY">
+  <data key="d1">1</data>
+</edge>
+<edge source="WILLARD" target="CHARLIE">
+  <data key="d1">1</data>
+</edge>
+<edge source="WILLARD" target="AGENT">
+  <data key="d1">1</data>
+</edge>
+<edge source="WILLARD" target="AUSTRALIAN">
+  <data key="d1">1</data>
+</edge>
+<edge source="WILLARD" target="CAPTAIN">
+  <data key="d1">1</data>
+</edge>
+<edge source="WILLARD" target="FRENCHMAN">
+  <data key="d1">1</data>
+</edge>
+<edge source="WILLARD" target="GUARD">
+  <data key="d1">1</data>
+</edge>
+<edge source="WILLARD" target="GUNNER">
+  <data key="d1">1</data>
+</edge>
+<edge source="WILLARD" target="LAWYER">
+  <data key="d1">1</data>
+</edge>
+<edge source="WILLARD" target="LYNDA">
+  <data key="d1">1</data>
+</edge>
+<edge source="WILLARD" target="MAN">
+  <data key="d1">1</data>
+</edge>
+<edge source="WILLARD" target="OTHER SOLDIER">
+  <data key="d1">1</data>
+</edge>
+<edge source="WILLARD" target="PILOT">
+  <data key="d1">1</data>
+</edge>
+<edge source="WILLARD" target="RADIO">
+  <data key="d1">1</data>
+</edge>
+<edge source="WILLARD" target="OTHERS">
+  <data key="d1">1</data>
+</edge>
+<edge source="WILLARD" target="ROACH">
+  <data key="d1">1</data>
+</edge>
+<edge source="WILLARD" target="SERGEANT">
+  <data key="d1">1</data>
+</edge>
+<edge source="WILLARD" target="SPOTTER">
+  <data key="d1">1</data>
+</edge>
+<edge source="WILLARD" target="TERRI">
+  <data key="d1">1</data>
+</edge>
+<edge source="WILLARD" target="TOM">
+  <data key="d1">1</data>
+</edge>
+<edge source="CHEF" target="LANCE">
+  <data key="d1">9</data>
+</edge>
+<edge source="CHEF" target="CLEAN">
+  <data key="d1">8</data>
+</edge>
+<edge source="CHEF" target="KURTZ">
+  <data key="d1">5</data>
+</edge>
+<edge source="CHEF" target="PHILIPPE">
+  <data key="d1">3</data>
+</edge>
+<edge source="CHEF" target="GASTON">
+  <data key="d1">3</data>
+</edge>
+<edge source="CHEF" target="CATHY">
+  <data key="d1">1</data>
+</edge>
+<edge source="CHEF" target="AUSTRALIAN">
+  <data key="d1">1</data>
+</edge>
+<edge source="CHEF" target="AGENT">
+  <data key="d1">1</data>
+</edge>
+<edge source="CHEF" target="SOLDIER">
+  <data key="d1">1</data>
+</edge>
+<edge source="CHEF" target="SPOTTER">
+  <data key="d1">1</data>
+</edge>
+<edge source="CHEF" target="KILGORE">
+  <data key="d1">1</data>
+</edge>
+<edge source="CHEF" target="FRENCHMAN">
+  <data key="d1">1</data>
+</edge>
+<edge source="CHEF" target="GUNNER">
+  <data key="d1">1</data>
+</edge>
+<edge source="CHEF" target="LYNDA">
+  <data key="d1">1</data>
+</edge>
+<edge source="CHEF" target="NIGHT">
+  <data key="d1">1</data>
+</edge>
+<edge source="CHEF" target="MOONBY">
+  <data key="d1">1</data>
+</edge>
+<edge source="CHEF" target="OTHER SOLDIER">
+  <data key="d1">1</data>
+</edge>
+<edge source="CHEF" target="RADIO">
+  <data key="d1">1</data>
+</edge>
+<edge source="CHEF" target="ROACH">
+  <data key="d1">1</data>
+</edge>
+<edge source="CHEF" target="ROXANNE">
+  <data key="d1">1</data>
+</edge>
+<edge source="LANCE" target="KILGORE">
+  <data key="d1">11</data>
+</edge>
+<edge source="LANCE" target="CLEAN">
+  <data key="d1">8</data>
+</edge>
+<edge source="LANCE" target="SOLDIER">
+  <data key="d1">3</data>
+</edge>
+<edge source="LANCE" target="GASTON">
+  <data key="d1">2</data>
+</edge>
+<edge source="LANCE" target="MIKE">
+  <data key="d1">2</data>
+</edge>
+<edge source="LANCE" target="PHILIPPE">
+  <data key="d1">2</data>
+</edge>
+<edge source="LANCE" target="CATHY">
+  <data key="d1">1</data>
+</edge>
+<edge source="LANCE" target="GUNNER">
+  <data key="d1">1</data>
+</edge>
+<edge source="LANCE" target="COLBY">
+  <data key="d1">1</data>
+</edge>
+<edge source="LANCE" target="LYNDA">
+  <data key="d1">1</data>
+</edge>
+<edge source="LANCE" target="TOM">
+  <data key="d1">1</data>
+</edge>
+<edge source="LANCE" target="ROXANNE">
+  <data key="d1">1</data>
+</edge>
+<edge source="LANCE" target="SPOTTER">
+  <data key="d1">1</data>
+</edge>
+<edge source="LANCE" target="ROACH">
+  <data key="d1">1</data>
+</edge>
+<edge source="LANCE" target="OTHER SOLDIER">
+  <data key="d1">1</data>
+</edge>
+<edge source="LANCE" target="OTHERS">
+  <data key="d1">1</data>
+</edge>
+<edge source="LANCE" target="MOONBY">
+  <data key="d1">1</data>
+</edge>
+<edge source="LANCE" target="MAN">
+  <data key="d1">1</data>
+</edge>
+<edge source="KILGORE" target="OTHERS">
+  <data key="d1">2</data>
+</edge>
+<edge source="KILGORE" target="SOLDIER">
+  <data key="d1">2</data>
+</edge>
+<edge source="KILGORE" target="MIKE">
+  <data key="d1">2</data>
+</edge>
+<edge source="KILGORE" target="CLEAN">
+  <data key="d1">2</data>
+</edge>
+<edge source="KILGORE" target="RADIO">
+  <data key="d1">2</data>
+</edge>
+<edge source="KILGORE" target="GUARD">
+  <data key="d1">1</data>
+</edge>
+<edge source="KILGORE" target="GUNNER">
+  <data key="d1">1</data>
+</edge>
+<edge source="KILGORE" target="LIEUTENANT">
+  <data key="d1">1</data>
+</edge>
+<edge source="KILGORE" target="CO-PILOT">
+  <data key="d1">1</data>
+</edge>
+<edge source="KILGORE" target="TOM">
+  <data key="d1">1</data>
+</edge>
+<edge source="KURTZ" target="CIVILIAN">
+  <data key="d1">1</data>
+</edge>
+<edge source="KURTZ" target="COLONEL">
+  <data key="d1">1</data>
+</edge>
+<edge source="KURTZ" target="COLBY">
+  <data key="d1">1</data>
+</edge>
+<edge source="KURTZ" target="NIGHT">
+  <data key="d1">1</data>
+</edge>
+<edge source="KURTZ" target="MOONBY">
+  <data key="d1">1</data>
+</edge>
+<edge source="KURTZ" target="KURTZ'S WIFE">
+  <data key="d1">1</data>
+</edge>
+<edge source="KURTZ" target="MAJOR">
+  <data key="d1">1</data>
+</edge>
+<edge source="CLEAN" target="AGENT">
+  <data key="d1">1</data>
+</edge>
+<edge source="CLEAN" target="CATHY">
+  <data key="d1">1</data>
+</edge>
+<edge source="CLEAN" target="GUNNER">
+  <data key="d1">1</data>
+</edge>
+<edge source="CLEAN" target="SOLDIER">
+  <data key="d1">1</data>
+</edge>
+<edge source="CLEAN" target="SPOTTER">
+  <data key="d1">1</data>
+</edge>
+<edge source="CLEAN" target="OTHER SOLDIER">
+  <data key="d1">1</data>
+</edge>
+<edge source="CLEAN" target="OTHERS">
+  <data key="d1">1</data>
+</edge>
+<edge source="CLEAN" target="ROACH">
+  <data key="d1">1</data>
+</edge>
+<edge source="CLEAN" target="LYNDA">
+  <data key="d1">1</data>
+</edge>
+<edge source="SOLDIER" target="GUNNER">
+  <data key="d1">1</data>
+</edge>
+<edge source="SOLDIER" target="LIEUTENANT">
+  <data key="d1">1</data>
+</edge>
+<edge source="SOLDIER" target="OTHER SOLDIER">
+  <data key="d1">1</data>
+</edge>
+<edge source="SOLDIER" target="MIKE">
+  <data key="d1">1</data>
+</edge>
+<edge source="SOLDIER" target="ROACH">
+  <data key="d1">1</data>
+</edge>
+<edge source="SOLDIER" target="SPOTTER">
+  <data key="d1">1</data>
+</edge>
+<edge source="COLBY" target="MOONBY">
+  <data key="d1">2</data>
+</edge>
+<edge source="COLBY" target="MAN">
+  <data key="d1">1</data>
+</edge>
+<edge source="GASTON" target="PHILIPPE">
+  <data key="d1">3</data>
+</edge>
+<edge source="GASTON" target="ROXANNE">
+  <data key="d1">2</data>
+</edge>
+<edge source="ROXANNE" target="PHILIPPE">
+  <data key="d1">1</data>
+</edge>
+<edge source="MOONBY" target="AUSTRALIAN">
+  <data key="d1">1</data>
+</edge>
+<edge source="MOONBY" target="MAN">
+  <data key="d1">1</data>
+</edge>
+<edge source="CIVILIAN" target="COLONEL">
+  <data key="d1">2</data>
+</edge>
+<edge source="CIVILIAN" target="MAJOR">
+  <data key="d1">2</data>
+</edge>
+<edge source="CIVILIAN" target="CAPTAIN">
+  <data key="d1">1</data>
+</edge>
+<edge source="COLONEL" target="MAJOR">
+  <data key="d1">2</data>
+</edge>
+<edge source="OTHERS" target="CO-PILOT">
+  <data key="d1">1</data>
+</edge>
+<edge source="OTHERS" target="RADIO">
+  <data key="d1">1</data>
+</edge>
+<edge source="MIKE" target="TOM">
+  <data key="d1">1</data>
+</edge>
+<edge source="RADIO" target="CO-PILOT">
+  <data key="d1">1</data>
+</edge>
+<edge source="RADIO" target="LIEUTENANT">
+  <data key="d1">1</data>
+</edge>
+<edge source="RADIO" target="PILOT">
+  <data key="d1">1</data>
+</edge>
+<edge source="ACCOUNTANT" target="LAWYER">
+  <data key="d1">1</data>
+</edge>
+<edge source="ACCOUNTANT" target="CHARLIE">
+  <data key="d1">1</data>
+</edge>
+<edge source="LAWYER" target="CHARLIE">
+  <data key="d1">1</data>
+</edge>
+<edge source="AGENT" target="PILOT">
+  <data key="d1">1</data>
+</edge>
+<edge source="AGENT" target="TERRI">
+  <data key="d1">1</data>
+</edge>
+<edge source="PILOT" target="TERRI">
+  <data key="d1">1</data>
+</edge>
+<edge source="CATHY" target="LYNDA">
+  <data key="d1">1</data>
+</edge>
+<edge source="SPOTTER" target="GUNNER">
+  <data key="d1">1</data>
+</edge>
+<edge source="SPOTTER" target="OTHER SOLDIER">
+  <data key="d1">1</data>
+</edge>
+<edge source="SPOTTER" target="ROACH">
+  <data key="d1">1</data>
+</edge>
+<edge source="ROACH" target="GUNNER">
+  <data key="d1">1</data>
+</edge>
+<edge source="ROACH" target="OTHER SOLDIER">
+  <data key="d1">1</data>
+</edge>
+<edge source="GUNNER" target="OTHER SOLDIER">
+  <data key="d1">1</data>
+</edge>
+<edge source="FOURTH SPECIAL FORCES" target="NU MUNG BA">
+  <data key="d1">1</data>
+</edge>
+</graph></graphml>
+```
