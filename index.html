@@ -1,0 +1,759 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Apocalypse Now — Analiza Sieci Postaci</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Black+Ops+One&family=Special+Elite&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.8.5/d3.min.js"></script>
+<style>
+:root {
+  --bg-void:    #04040200;
+  --bg-deep:    #060604;
+  --bg-dark:    #0c0b06;
+  --bg-panel:   #0a0908;
+  --bg-mid:     #131109;
+  --border:     #22200e;
+  --border-hi:  #3a3618;
+  --border-acc: #5a3a08;
+
+  /* Zaktualizowana paleta — bardziej stonowane odcienie dżungli i rzeki */
+  --comm-0: #D4621A;   /* Napalm orange — PBR boat crew */
+  --comm-1: #687945;   /* Zgaszona oliwkowa zieleń — Kurtz/Willard */
+  --comm-2: #B8962A;   /* Military gold — Kilgore's war theatre */
+  --comm-3: #4A5D6B;   /* Stalowy rzeczny błękit — peripheral agents */
+  --comm-4: #6A5C3E;   /* Faded sepia — isolated fragments */
+
+  --accent:      #FF4400;
+  --accent-dim:  rgba(255,68,0,0.25);
+  --accent-glow: rgba(255,68,0,0.12);
+
+  --text-bright: #E2D5A0;
+  --text-mid:    #8A7E58;
+  --text-dim:    #3A3420;
+  --text-dark:   #1E1C10;
+
+  --font-display: 'Black Ops One', cursive;
+  --font-body:    'Special Elite', cursive;
+}
+
+*, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+
+html, body {
+  width:100%; height:100%;
+  background: var(--bg-deep);
+  color: var(--text-bright);
+  font-family: var(--font-body);
+  overflow: hidden;
+}
+
+#grain-canvas {
+  position: fixed; inset: 0;
+  width: 100%; height: 100%;
+  pointer-events: none;
+  z-index: 9500;
+  opacity: 0.09;
+  mix-blend-mode: overlay;
+}
+
+/* ════════════════════════════════ HEADER ══════════════════════════════════ */
+header {
+  height:88px;
+  display:flex; align-items:center; justify-content:center; flex-direction:column;
+  border-bottom:1px solid var(--border-hi);
+  background: linear-gradient(180deg, #0f0e06 0%, var(--bg-deep) 100%);
+  position:relative; z-index:10; flex-shrink:0;
+}
+header::before {
+  content:'';
+  position:absolute; bottom:0; left:10%; right:10%; height:1px;
+  background: linear-gradient(90deg, transparent 0%, var(--accent) 50%, transparent 100%);
+  opacity:0.6;
+}
+.hdr-eyebrow {
+  font-family: var(--font-body);
+  font-size:10px; letter-spacing:0.55em;
+  color: var(--accent); text-transform:uppercase; opacity:0.7;
+  margin-bottom:4px;
+}
+.hdr-title {
+  font-family: var(--font-display);
+  font-size: clamp(28px,5vw,64px);
+  letter-spacing:0.18em;
+  color: var(--text-bright);
+  text-shadow:
+    0 0 30px var(--accent-dim),
+    0 0 80px rgba(200,150,40,0.12);
+  line-height:1;
+}
+.hdr-sub {
+  font-family: var(--font-body);
+  font-size:10px; letter-spacing:0.38em;
+  color: var(--text-mid);
+  margin-top:5px; text-transform:uppercase;
+}
+
+/* ════════════════════════════════ LAYOUT ══════════════════════════════════ */
+.layout {
+  display: grid;
+  grid-template-columns: 1fr 300px;
+  height: calc(100vh - 88px - 180px);
+  min-height: 440px;
+}
+
+.graph-wrap {
+  position:relative; overflow:hidden;
+  border-right:1px solid var(--border);
+}
+
+.controls {
+  position:absolute; top:12px; left:12px; z-index:20;
+  display:flex; gap:5px; flex-wrap:wrap;
+}
+.ctrl {
+  font-family: var(--font-display);
+  font-size:9px; letter-spacing:0.12em;
+  padding:5px 11px;
+  background: rgba(6,6,4,0.88);
+  border:1px solid var(--border-hi);
+  color: var(--text-mid);
+  cursor:pointer; transition:all .2s;
+  text-transform:uppercase;
+}
+.ctrl:hover, .ctrl.on {
+  border-color: var(--accent);
+  color: var(--accent);
+  background: rgba(255,68,0,0.07);
+  box-shadow: 0 0 10px rgba(255,68,0,0.18);
+}
+
+#gsvg {
+  width:100%; height:100%;
+}
+
+#tip {
+  position:fixed; pointer-events:none; z-index:8000;
+  display:none;
+  background: rgba(4,4,2,0.97);
+  border:1px solid var(--border-hi);
+  border-left:2px solid var(--accent);
+  padding:10px 14px; min-width:170px;
+  box-shadow:0 6px 30px rgba(0,0,0,0.9);
+}
+.tip-name {
+  font-family:var(--font-display); font-size:13px;
+  color:var(--text-bright); letter-spacing:0.08em; margin-bottom:7px;
+}
+.tip-row {
+  display:flex; justify-content:space-between; gap:16px;
+  font-size:10px; color:var(--text-mid); margin-top:3px;
+}
+.tip-row b { color:var(--text-bright); }
+
+.rpanel {
+  display:flex; flex-direction:column;
+  overflow:hidden; background:var(--bg-panel);
+}
+.psec {
+  padding:12px 14px;
+  border-bottom:1px solid var(--border);
+  flex-shrink:0;
+}
+.ptitle {
+  font-family:var(--font-display); font-size:9px;
+  letter-spacing:0.35em; color:var(--text-mid);
+  text-transform:uppercase; margin-bottom:9px;
+}
+
+.placeholder {
+  border:1px dashed var(--border-hi);
+  padding:16px; text-align:center;
+  font-size:10px; letter-spacing:0.2em;
+  color:var(--text-dark); line-height:1.8;
+}
+.card-name {
+  font-family:var(--font-display); font-size:16px;
+  letter-spacing:0.08em; color:var(--text-bright); margin-bottom:6px;
+}
+.card-badge {
+  display:inline-block; font-size:9px; letter-spacing:0.22em;
+  padding:2px 8px; margin-bottom:10px; border-left:3px solid;
+}
+.mrow {
+  display:flex; justify-content:space-between; align-items:center;
+  padding:3px 0; border-bottom:1px solid var(--border);
+}
+.mrow:last-of-type { border-bottom:none; }
+.mlabel { font-size:10px; color:var(--text-mid); letter-spacing:0.08em; }
+.mval   { font-size:11px; color:var(--text-bright); }
+.mbar   { height:2px; background:var(--border); margin-top:1px; }
+.mfill  { height:100%; background:var(--accent); transition:width .5s ease; }
+.conn-list { margin-top:8px; max-height:80px; overflow-y:auto; }
+.conn-item {
+  display:flex; justify-content:space-between;
+  font-size:10px; color:var(--text-mid); padding:2px 0;
+  border-bottom:1px solid var(--border);
+}
+.conn-item span:last-child { color:var(--text-dim); }
+
+.leg-item { display:flex; align-items:center; gap:8px; margin-bottom:5px; }
+.leg-dot  { width:9px; height:9px; border-radius:50%; flex-shrink:0; }
+.leg-name { font-size:10px; color:var(--text-mid); letter-spacing:0.04em; flex:1; }
+.leg-cnt  { font-size:9px; color:var(--text-dim); }
+
+.rank-wrap { flex:1; display:flex; flex-direction:column; overflow:hidden; }
+.rank-tabs { display:flex; padding:8px 14px 0; gap:2px; border-bottom:1px solid var(--border); }
+.rtab {
+  font-family:var(--font-display); font-size:8px; letter-spacing:0.1em;
+  padding:4px 8px; background:none;
+  border:1px solid transparent; border-bottom:none;
+  color:var(--text-mid); cursor:pointer; transition:all .2s; text-transform:uppercase;
+}
+.rtab.on {
+  border-color:var(--border-hi);
+  border-bottom:1px solid var(--bg-panel);
+  color:var(--accent); margin-bottom:-1px;
+}
+.rank-list { flex:1; overflow-y:auto; padding:6px 14px; }
+.ritem {
+  display:flex; align-items:center; gap:7px;
+  padding:4px 0; border-bottom:1px solid var(--border);
+  cursor:pointer; transition:border-color .15s;
+}
+.ritem:hover { border-bottom-color:var(--accent); }
+.rnum { font-family:var(--font-display); font-size:9px; color:var(--text-dim); width:16px; text-align:right; flex-shrink:0; }
+.rdot { width:7px; height:7px; border-radius:50%; flex-shrink:0; }
+.rname { font-size:10px; color:var(--text-mid); flex:1; letter-spacing:0.04em; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+.rbar-bg { width:50px; height:2px; background:var(--border); flex-shrink:0; }
+.rbar-fill { height:100%; background:var(--accent); transition:width .5s ease; }
+.rval { font-size:9px; color:var(--text-dim); width:38px; text-align:right; flex-shrink:0; }
+
+.interp {
+  height:180px;
+  border-top:1px solid var(--border-hi);
+  background: var(--bg-mid);
+  position:relative; overflow:hidden;
+  display:flex; flex-direction:column; flex-shrink:0;
+}
+.interp::before {
+  content:''; position:absolute; top:0; left:0; right:0; height:1px;
+  background:linear-gradient(90deg, transparent, var(--accent) 50%, transparent);
+  opacity:0.5;
+}
+.interp-inner {
+  padding:18px 32px; overflow-y:auto; flex:1;
+}
+.isec-title {
+  font-family:var(--font-display); font-size:9px; letter-spacing:0.4em;
+  color:var(--accent); margin-bottom:14px; text-transform:uppercase; flex-shrink:0;
+}
+.igrid {
+  display:grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px,1fr));
+  gap:20px;
+}
+.iblock h3 {
+  font-family:var(--font-display); font-size:11px; letter-spacing:0.08em;
+  color:var(--text-bright); margin-bottom:5px;
+  border-left:2px solid var(--accent); padding-left:7px;
+}
+.iblock p {
+  font-size:11px; line-height:1.65; color:var(--text-mid);
+}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="hdr-eyebrow">Francis Ford Coppola · 1979</div>
+  <div class="hdr-title">APOCALYPSE NOW</div>
+  <div class="hdr-sub">Analiza Sieci Postaci &nbsp;·&nbsp; Social Network Analysis</div>
+</header>
+
+<div class="layout">
+  <div class="graph-wrap">
+    <div class="controls" id="ctrl-btns">
+      <button class="ctrl on" data-mode="degree">Degree</button>
+      <button class="ctrl" data-mode="betweenness">Betweenness</button>
+      <button class="ctrl" data-mode="closeness">Closeness</button>
+      <button class="ctrl" data-mode="pagerank">PageRank</button>
+    </div>
+    <svg id="gsvg"></svg>
+  </div>
+
+  <div class="rpanel">
+    <div class="psec" id="card-sec">
+      <div class="ptitle">▸ Karta Postaci</div>
+      <div class="placeholder" id="placeholder">KLIKNIJ WĘZEŁ<br>ABY ZOBACZYĆ SZCZEGÓŁY</div>
+      <div id="ncard"></div>
+    </div>
+
+    <div class="psec">
+      <div class="ptitle">▸ Społeczności (Louvain)</div>
+      <div id="legend"></div>
+    </div>
+
+    <div class="rank-wrap">
+      <div class="rank-tabs" id="rtabs">
+        <button class="rtab on" data-rank="degree">Degree</button>
+        <button class="rtab" data-rank="betweenness">Between.</button>
+        <button class="rtab" data-rank="closeness">Closeness</button>
+        <button class="rtab" data-rank="pagerank">PageRank</button>
+      </div>
+      <div class="rank-list" id="rlist"></div>
+    </div>
+  </div>
+</div>
+
+<div class="interp">
+  <div class="interp-inner">
+    <div class="isec-title">▸ Interpretacja Struktury Sieci</div>
+    <div class="igrid">
+      <div class="iblock">
+        <h3>Willard — Oś Narracyjna Sieci</h3>
+        <p>Betweenness centrality Willarda wynosi 0,539 — ponad 8× więcej niż Chef (0,066). Jako jedyna postać przemierzająca całą rzekę od briefingu do kompleksu Kurtza, Willard jest strukturalnym mostem łączącym odrębne światy.</p>
+      </div>
+      <div class="iblock">
+        <h3>Cztery Kręgi Apokalipsy</h3>
+        <p>Algorytm Louvaina wyodrębnił 4 klastry odpowiadające etapom podróży. Społeczność 0 (łódź PBR) to trzon misji. Społeczność 1 (strefa Kurtza) skupia postacie z kresu drogi. Społeczność 2 (Kilgore) to teatr szaleństwa napalmu.</p>
+      </div>
+      <div class="iblock">
+        <h3>Kilgore — Ikoniczny, Lecz Peryferyjny</h3>
+        <p>Pomimo legendarnej sceny nalotu z muzyką Wagnera, Kilgore wykazuje niskie betweenness (0,034). Jego epizod jest fabularnie ikoniczny, lecz strukturalnie odizolowaną wyspą.</p>
+      </div>
+      <div class="iblock">
+        <h3>Kurtz — Centrum w Ciemności</h3>
+        <p>Paradoks sieci: Kurtz, tytułowy antagonista, ma betweenness zaledwie 0,012. Jego izolacja strukturalna w grafie idealnie oddają metaforę odejścia od cywilizacji.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="tip">
+  <div class="tip-name" id="tt-name"></div>
+  <div class="tip-row"><span>Degree</span><b id="tt-deg"></b></div>
+  <div class="tip-row"><span>Betweenness</span><b id="tt-bet"></b></div>
+  <div class="tip-row"><span>PageRank</span><b id="tt-pr"></b></div>
+</div>
+
+<script>
+/* ═══════════════════════════ DATA ═══════════════════════════════════════ */
+// Zmiana kolorów w obiekcie COMM na bardziej stonowane
+const COMM = {
+  0: {color:'#D4621A', name:'Załoga Łodzi PBR',        badge:'BOAT CREW'},
+  1: {color:'#687945', name:'Strefa Kurtza / Willard',  badge:"KURTZ'S DOMAIN"}, 
+  2: {color:'#B8962A', name:'Kilgore & Front Napalmu',  badge:'KILGORE\'S WAR'},
+  3: {color:'#4A5D6B', name:'Peryferyjni Agenci',       badge:'PERIPHERAL'},
+  4: {color:'#6A5C3E', name:'Odizolowani',              badge:'ISOLATED'},
+};
+
+const rawNodes = [
+  {id:'CHIEF',c:0,bet:0.05420,sz:13.016},
+  {id:'WILLARD',c:1,bet:0.53904,sz:40},
+  {id:'CHEF',c:0,bet:0.06551,sz:13.646},
+  {id:'LANCE',c:0,bet:0.04931,sz:12.744},
+  {id:'KILGORE',c:2,bet:0.03372,sz:11.877},
+  {id:'KURTZ',c:1,bet:0.01172,sz:10.652},
+  {id:'CLEAN',c:0,bet:0.00914,sz:10.509},
+  {id:'SOLDIER',c:0,bet:0.00466,sz:10.259},
+  {id:'COLBY',c:1,bet:0.000646,sz:10.036},
+  {id:'GASTON',c:0,bet:0,sz:10},
+  {id:'ROXANNE',c:0,bet:0,sz:10},
+  {id:'MOONBY',c:1,bet:0.00314,sz:10.175},
+  {id:'PHILIPPE',c:0,bet:0,sz:10},
+  {id:'CIVILIAN',c:1,bet:0.00166,sz:10.092},
+  {id:'COLONEL',c:1,bet:0,sz:10},
+  {id:'MAJOR',c:1,bet:0,sz:10},
+  {id:"KURTZ'S WIFE",c:1,bet:0,sz:10},
+  {id:'OTHERS',c:2,bet:0.01193,sz:10.664},
+  {id:'MIKE',c:2,bet:0.000221,sz:10.012},
+  {id:'RADIO',c:2,bet:0.01341,sz:10.747},
+  {id:'NIGHT',c:1,bet:0,sz:10},
+  {id:'LIEUTENANT',c:2,bet:0.000498,sz:10.028},
+  {id:'ACCOUNTANT',c:1,bet:0,sz:10},
+  {id:'LAWYER',c:1,bet:0,sz:10},
+  {id:'CHARLIE',c:1,bet:0,sz:10},
+  {id:'AGENT',c:3,bet:0.00314,sz:10.175},
+  {id:'PILOT',c:3,bet:0.00131,sz:10.073},
+  {id:'CATHY',c:0,bet:0,sz:10},
+  {id:'LYNDA',c:0,bet:0,sz:10},
+  {id:'TERRI',c:3,bet:0,sz:10},
+  {id:'AUSTRALIAN',c:1,bet:0,sz:10},
+  {id:'CAPTAIN',c:1,bet:0,sz:10},
+  {id:'SERGEANT',c:1,bet:0,sz:10},
+  {id:'SPOTTER',c:0,bet:0,sz:10},
+  {id:'TOM',c:2,bet:0,sz:10},
+  {id:'ROACH',c:0,bet:0,sz:10},
+  {id:'GUNNER',c:0,bet:0.00073,sz:10.041},
+  {id:'OTHER SOLDIER',c:0,bet:0,sz:10},
+  {id:'FRENCHMAN',c:0,bet:0,sz:10},
+  {id:'FOURTH SPECIAL FORCES',c:4,bet:0,sz:10},
+  {id:'NU MUNG BA',c:4,bet:0,sz:10},
+  {id:'MAN',c:1,bet:0,sz:10},
+  {id:'GUARD',c:2,bet:0,sz:10},
+  {id:'CO-PILOT',c:2,bet:0,sz:10},
+];
+
+const rawEdges = [
+  ['CHIEF','WILLARD',30],['CHIEF','CHEF',16],['CHIEF','LANCE',13],['CHIEF','CLEAN',9],
+  ['CHIEF','GASTON',3],['CHIEF','KILGORE',3],['CHIEF','PHILIPPE',2],['CHIEF','SOLDIER',2],
+  ['CHIEF','AGENT',1],['CHIEF','CATHY',1],['CHIEF','SERGEANT',1],['CHIEF','ROXANNE',1],
+  ['CHIEF','SPOTTER',1],['CHIEF','TOM',1],['CHIEF','ROACH',1],['CHIEF','GUNNER',1],
+  ['CHIEF','LIEUTENANT',1],['CHIEF','LYNDA',1],['CHIEF','MIKE',1],['CHIEF','OTHER SOLDIER',1],
+  ['CHIEF','OTHERS',1],['CHIEF','FRENCHMAN',1],
+  ['WILLARD','CHEF',23],['WILLARD','LANCE',22],['WILLARD','KILGORE',13],['WILLARD','KURTZ',12],
+  ['WILLARD','CLEAN',9],['WILLARD','SOLDIER',5],['WILLARD','COLBY',5],['WILLARD','GASTON',4],
+  ['WILLARD','ROXANNE',4],['WILLARD','MOONBY',4],['WILLARD','CIVILIAN',3],['WILLARD','PHILIPPE',3],
+  ['WILLARD','MAJOR',2],["WILLARD","KURTZ'S WIFE",2],['WILLARD','COLONEL',2],['WILLARD','NIGHT',2],
+  ['WILLARD','MIKE',2],['WILLARD','LIEUTENANT',2],['WILLARD','ACCOUNTANT',1],['WILLARD','CATHY',1],
+  ['WILLARD','CHARLIE',1],['WILLARD','AGENT',1],['WILLARD','AUSTRALIAN',1],['WILLARD','CAPTAIN',1],
+  ['WILLARD','FRENCHMAN',1],['WILLARD','GUARD',1],['WILLARD','GUNNER',1],['WILLARD','LAWYER',1],
+  ['WILLARD','LYNDA',1],['WILLARD','MAN',1],['WILLARD','OTHER SOLDIER',1],['WILLARD','PILOT',1],
+  ['WILLARD','RADIO',1],['WILLARD','OTHERS',1],['WILLARD','ROACH',1],['WILLARD','SERGEANT',1],
+  ['WILLARD','SPOTTER',1],['WILLARD','TERRI',1],['WILLARD','TOM',1],
+  ['CHEF','LANCE',9],['CHEF','CLEAN',8],['CHEF','KURTZ',5],['CHEF','PHILIPPE',3],
+  ['CHEF','GASTON',3],['CHEF','CATHY',1],['CHEF','AUSTRALIAN',1],['CHEF','AGENT',1],
+  ['CHEF','SOLDIER',1],['CHEF','SPOTTER',1],['CHEF','KILGORE',1],['CHEF','FRENCHMAN',1],
+  ['CHEF','GUNNER',1],['CHEF','LYNDA',1],['CHEF','NIGHT',1],['CHEF','MOONBY',1],
+  ['CHEF','OTHER SOLDIER',1],['CHEF','RADIO',1],['CHEF','ROACH',1],['CHEF','ROXANNE',1],
+  ['LANCE','KILGORE',11],['LANCE','CLEAN',8],['LANCE','SOLDIER',3],['LANCE','GASTON',2],
+  ['LANCE','MIKE',2],['LANCE','PHILIPPE',2],['LANCE','CATHY',1],['LANCE','GUNNER',1],
+  ['LANCE','COLBY',1],['LANCE','LYNDA',1],['LANCE','TOM',1],['LANCE','ROXANNE',1],
+  ['LANCE','SPOTTER',1],['LANCE','ROACH',1],['LANCE','OTHER SOLDIER',1],['LANCE','OTHERS',1],
+  ['LANCE','MOONBY',1],['LANCE','MAN',1],
+  ['KILGORE','OTHERS',2],['KILGORE','SOLDIER',2],['KILGORE','MIKE',2],['KILGORE','CLEAN',2],
+  ['KILGORE','RADIO',2],['KILGORE','GUARD',1],['KILGORE','GUNNER',1],['KILGORE','LIEUTENANT',1],
+  ['KILGORE','CO-PILOT',1],['KILGORE','TOM',1],
+  ['KURTZ','CIVILIAN',1],['KURTZ','COLONEL',1],['KURTZ','COLBY',1],['KURTZ','NIGHT',1],
+  ['KURTZ','MOONBY',1],["KURTZ","KURTZ'S WIFE",1],['KURTZ','MAJOR',1],
+  ['CLEAN','AGENT',1],['CLEAN','CATHY',1],['CLEAN','GUNNER',1],['CLEAN','SOLDIER',1],
+  ['CLEAN','SPOTTER',1],['CLEAN','OTHER SOLDIER',1],['CLEAN','OTHERS',1],['CLEAN','ROACH',1],['CLEAN','LYNDA',1],
+  ['SOLDIER','GUNNER',1],['SOLDIER','LIEUTENANT',1],['SOLDIER','OTHER SOLDIER',1],
+  ['SOLDIER','MIKE',1],['SOLDIER','ROACH',1],['SOLDIER','SPOTTER',1],
+  ['COLBY','MOONBY',2],['COLBY','MAN',1],
+  ['GASTON','PHILIPPE',3],['GASTON','ROXANNE',2],
+  ['ROXANNE','PHILIPPE',1],
+  ['MOONBY','AUSTRALIAN',1],['MOONBY','MAN',1],
+  ['CIVILIAN','COLONEL',2],['CIVILIAN','MAJOR',2],['CIVILIAN','CAPTAIN',1],
+  ['COLONEL','MAJOR',2],
+  ['OTHERS','CO-PILOT',1],['OTHERS','RADIO',1],
+  ['MIKE','TOM',1],
+  ['RADIO','CO-PILOT',1],['RADIO','LIEUTENANT',1],['RADIO','PILOT',1],
+  ['ACCOUNTANT','LAWYER',1],['ACCOUNTANT','CHARLIE',1],
+  ['LAWYER','CHARLIE',1],
+  ['AGENT','PILOT',1],['AGENT','TERRI',1],
+  ['PILOT','TERRI',1],
+  ['CATHY','LYNDA',1],
+  ['SPOTTER','GUNNER',1],['SPOTTER','OTHER SOLDIER',1],['SPOTTER','ROACH',1],
+  ['ROACH','GUNNER',1],['ROACH','OTHER SOLDIER',1],
+  ['GUNNER','OTHER SOLDIER',1],
+  ['FOURTH SPECIAL FORCES','NU MUNG BA',1],
+];
+
+/* ═══════════════════════════ BUILD GRAPH ═══════════════════════════════ */
+const nodeMap = {};
+rawNodes.forEach(n => {
+  nodeMap[n.id] = {
+    id:n.id, community:n.c, betweenness:n.bet, rawSize:n.sz,
+    degree:0, neighbors:[], edges:[]
+  };
+});
+
+const edges = [];
+rawEdges.forEach(([s,t,w]) => {
+  if (!nodeMap[s] || !nodeMap[t]) return;
+  edges.push({source:s, target:t, weight:w});
+  nodeMap[s].degree++; nodeMap[t].degree++;
+  nodeMap[s].neighbors.push(t); nodeMap[t].neighbors.push(s);
+  nodeMap[s].edges.push({node:t, weight:w});
+  nodeMap[t].edges.push({node:s, weight:w});
+});
+
+const nodes = Object.values(nodeMap);
+
+function bfs(startId) {
+  const dist={[startId]:0}, q=[startId];
+  while(q.length) {
+    const u=q.shift();
+    nodeMap[u].neighbors.forEach(v => {
+      if(dist[v]===undefined){ dist[v]=dist[u]+1; q.push(v); }
+    });
+  }
+  return dist;
+}
+nodes.forEach(n => {
+  const dist = bfs(n.id);
+  const reach = Object.values(dist).filter(d=>d>0);
+  const sumD = reach.reduce((a,b)=>a+b,0);
+  n.closeness = sumD>0 ? (reach.length**2)/(sumD*(nodes.length-1)) : 0;
+});
+
+(function(d=0.85,it=60){
+  const N=nodes.length;
+  nodes.forEach(n=>{ n.pagerank=1/N; });
+  for(let i=0;i<it;i++){
+    const nxt={};
+    nodes.forEach(n=>{ nxt[n.id]=(1-d)/N; });
+    nodes.forEach(n=>{
+      const c = n.pagerank/(n.degree||1);
+      n.neighbors.forEach(nb=>{ nxt[nb]+=d*c; });
+    });
+    nodes.forEach(n=>{ n.pagerank=nxt[n.id]; });
+  }
+})();
+
+const maxs = {
+  degree: Math.max(...nodes.map(n=>n.degree)),
+  betweenness: Math.max(...nodes.map(n=>n.betweenness)),
+  closeness: Math.max(...nodes.map(n=>n.closeness)),
+  pagerank: Math.max(...nodes.map(n=>n.pagerank)),
+};
+nodes.forEach(n=>{
+  n.degN   = n.degree/maxs.degree;
+  n.betN   = n.betweenness/maxs.betweenness;
+  n.cloN   = n.closeness/maxs.closeness;
+  n.prN    = n.pagerank/maxs.pagerank;
+});
+
+/* ═══════════════════════════ D3 SETUP ═══════════════════════════════════ */
+let activeMode = 'degree';
+
+function radius(n) {
+  const base=5, span=22;
+  const norm = activeMode==='degree'   ? n.degN
+             : activeMode==='betweenness' ? n.betN
+             : activeMode==='closeness'   ? n.cloN
+             : n.prN;
+  return base + norm*span;
+}
+
+const svg  = d3.select('#gsvg');
+const defs = svg.append('defs');
+
+const bg = defs.append('radialGradient').attr('id','bgG').attr('cx','50%').attr('cy','50%').attr('r','65%');
+bg.append('stop').attr('offset','0%').attr('stop-color','#141208');
+bg.append('stop').attr('offset','100%').attr('stop-color','#060604');
+
+const flt = defs.append('filter').attr('id','glow').attr('x','-30%').attr('y','-30%').attr('width','160%').attr('height','160%');
+flt.FeGaussianBlur = flt.append('feGaussianBlur').attr('in','SourceGraphic').attr('stdDeviation','3.5').attr('result','b');
+const fm = flt.append('feMerge');
+fm.append('feMergeNode').attr('in','b');
+fm.append('feMergeNode').attr('in','SourceGraphic');
+
+svg.append('rect').attr('width','100%').attr('height','100%')
+  .attr('fill','url(#bgG)').style('pointer-events','none');
+
+const root = svg.append('g');
+
+const zoom = d3.zoom().scaleExtent([0.15,5]).on('zoom', e=>root.attr('transform',e.transform));
+svg.call(zoom);
+svg.on('click', function(e){
+  if(e.target===this||e.target.nodeName==='rect'){ resetHL(); clearCard(); }
+});
+
+const wvals = edges.map(e=>e.weight);
+const wMin=Math.min(...wvals), wMax=Math.max(...wvals);
+const wWidth   = d3.scaleLinear().domain([wMin,wMax]).range([0.6,4.5]);
+const wOpacity = d3.scaleLinear().domain([wMin,wMax]).range([0.30,0.88]);
+
+// AKTUALIZACJA: Zwiększona siła przyciągania do środka dla sił X i Y z 0.04 na 0.18
+const sim = d3.forceSimulation(nodes)
+  .force('link', d3.forceLink(edges).id(d=>d.id)
+    .distance(d => Math.max(55, 180/Math.sqrt(d.weight+1))))
+  .force('charge', d3.forceManyBody().strength(-260))
+  .force('center', d3.forceCenter(0,0))
+  .force('x', d3.forceX(0).strength(0.18))
+  .force('y', d3.forceY(0).strength(0.18))
+  .force('collision', d3.forceCollide().radius(d=>radius(d)+10));
+
+const linkSel = root.append('g').selectAll('line').data(edges).join('line')
+  .attr('stroke','#C8A440')
+  .attr('stroke-width', d=>wWidth(d.weight))
+  .attr('stroke-opacity', d=>wOpacity(d.weight));
+
+const nodeSel = root.append('g').selectAll('g').data(nodes).join('g')
+  .attr('class','ng')
+  .style('cursor','pointer')
+  .call(d3.drag()
+    .on('start',(e,d)=>{ if(!e.active) sim.alphaTarget(0.3).restart(); d.fx=d.x; d.fy=d.y; })
+    .on('drag', (e,d)=>{ d.fx=e.x; d.fy=e.y; })
+    .on('end',  (e,d)=>{ if(!e.active) sim.alphaTarget(0); d.fx=null; d.fy=null; }));
+
+nodeSel.append('circle')
+  .attr('class','nc')
+  .attr('r', d=>radius(d))
+  .attr('fill', d=>{
+    const c=COMM[d.community]?.color||'#666';
+    return c;
+  })
+  .attr('stroke','#04040200')
+  .attr('stroke-width',1.5)
+  .attr('filter', d => (d.betweenness > 0.03) ? 'url(#glow)' : null);
+
+nodeSel.append('text')
+  .attr('class','nl')
+  .attr('dy', d=>radius(d)+11)
+  .attr('text-anchor','middle')
+  .attr('fill','#706040')
+  .attr('font-family','Special Elite, cursive')
+  .attr('font-size', d=>Math.max(6.5,Math.min(10,radius(d)*0.65))+'px')
+  .attr('pointer-events','none')
+  .text(d=>d.id);
+
+sim.on('tick',()=>{
+  linkSel.attr('x1',d=>d.source.x).attr('y1',d=>d.source.y)
+         .attr('x2',d=>d.target.x).attr('y2',d=>d.target.y);
+  nodeSel.attr('transform',d=>`translate(${d.x},${d.y})`);
+});
+
+setTimeout(()=>{
+  const el=document.getElementById('gsvg');
+  const w=el.clientWidth, h=el.clientHeight;
+  svg.call(zoom.transform, d3.zoomIdentity.translate(w/2,h/2).scale(0.68));
+},800);
+
+/* ═══════════════════════════ TOOLTIP ════════════════════════════════════ */
+const tip = document.getElementById('tip');
+nodeSel
+  .on('mouseover',(e,d)=>{
+    tip.style.display='block';
+    document.getElementById('tt-name').textContent=d.id;
+    document.getElementById('tt-deg').textContent=d.degree;
+    document.getElementById('tt-bet').textContent=d.betweenness.toFixed(4);
+    document.getElementById('tt-pr').textContent=d.pagerank.toFixed(4);
+  })
+  .on('mousemove',e=>{
+    tip.style.left=(e.clientX+15)+'px';
+    tip.style.top=(e.clientY-10)+'px';
+  })
+  .on('mouseout',()=>{ tip.style.display='none'; })
+  .on('click',(e,d)=>{
+    e.stopPropagation();
+    highlightNode(d);
+    showCard(d);
+  });
+
+function highlightNode(d){
+  const nb=new Set([d.id,...d.neighbors]);
+  nodeSel.select('circle')
+    .attr('opacity',n=>nb.has(n.id)?1:0.06)
+    .attr('stroke',n=>n.id===d.id?'#FF4400': nb.has(n.id)?(COMM[n.community]?.color||'#888'):'transparent')
+    .attr('stroke-width',n=>n.id===d.id?3:1.5);
+  nodeSel.select('text').attr('opacity',n=>nb.has(n.id)?1:0.06);
+  linkSel
+    .attr('opacity',l=>(l.source.id===d.id||l.target.id===d.id)?1:0.03)
+    .attr('stroke',l=>(l.source.id===d.id||l.target.id===d.id)?'#FF4400':'#C8A440')
+    .attr('stroke-opacity',l=>(l.source.id===d.id||l.target.id===d.id)?0.92:0.04);
+}
+
+function resetHL(){
+  nodeSel.select('circle')
+    .attr('opacity',1).attr('stroke','transparent').attr('stroke-width',1.5);
+  nodeSel.select('text').attr('opacity',1);
+  linkSel.attr('opacity',1).attr('stroke','#C8A440')
+    .attr('stroke-opacity',d=>wOpacity(d.weight));
+}
+
+function showCard(d){
+  document.getElementById('placeholder').style.display='none';
+  const cc=COMM[d.community]||{};
+  const topE=[...d.edges].sort((a,b)=>b.weight-a.weight).slice(0,6);
+  document.getElementById('ncard').innerHTML=`
+    <div class="card-name">${d.id}</div>
+    <div class="card-badge" style="color:${cc.color};border-color:${cc.color};background:${cc.color}1a">${cc.badge||'?'}</div>
+    ${['degree','betweenness','closeness','pagerank'].map(m=>{
+      const v=m==='degree'?d.degree:m==='betweenness'?d.betweenness:m==='closeness'?d.closeness:d.pagerank;
+      const norm=m==='degree'?d.degN:m==='betweenness'?d.betN:m==='closeness'?d.cloN:d.prN;
+      const disp=m==='degree'?v:v.toFixed(4);
+      return `<div class="mrow"><span class="mlabel">${m.toUpperCase()}</span><span class="mval">${disp}</span></div>
+              <div class="mbar"><div class="mfill" style="width:${norm*100}%"></div></div>`;
+    }).join('')}
+    <div style="margin-top:8px">
+      <div class="ptitle" style="margin-bottom:4px">▸ Top Połączenia</div>
+      <div class="conn-list">
+        ${topE.map(e=>`<div class="conn-item"><span>${e.node}</span><span>w:${e.weight}</span></div>`).join('')}
+      </div>
+    </div>
+  `;
+}
+function clearCard(){
+  document.getElementById('placeholder').style.display='block';
+  document.getElementById('ncard').innerHTML='';
+}
+
+function updateSizes(){
+  sim.force('collision').radius(d=>radius(d)+10);
+  nodeSel.select('circle').transition().duration(600).attr('r',d=>radius(d));
+  nodeSel.select('text').transition().duration(600)
+    .attr('dy',d=>radius(d)+11)
+    .attr('font-size',d=>Math.max(6.5,Math.min(10,radius(d)*0.65))+'px');
+  sim.alpha(0.3).restart();
+}
+
+document.getElementById('ctrl-btns').addEventListener('click',e=>{
+  const btn=e.target.closest('.ctrl');
+  if(!btn) return;
+  document.querySelectorAll('.ctrl').forEach(b=>b.classList.remove('on'));
+  btn.classList.add('on');
+  activeMode=btn.dataset.mode;
+  updateSizes();
+  document.querySelectorAll('.rtab').forEach(b=>{
+    b.classList.toggle('on', b.dataset.rank===activeMode);
+  });
+  renderRanking(activeMode);
+});
+
+const legEl=document.getElementById('legend');
+Object.entries(COMM).forEach(([id,cc])=>{
+  const cnt=nodes.filter(n=>n.community==id).length;
+  legEl.innerHTML+=`<div class="leg-item">
+    <div class="leg-dot" style="background:${cc.color}"></div>
+    <span class="leg-name">${cc.name}</span>
+    <span class="leg-cnt">${cnt}</span>
+  </div>`;
+});
+
+function renderRanking(metric){
+  const sorted=[...nodes].sort((a,b)=>{
+    const f=m=>m==='degree'?a.degree:m==='betweenness'?a.betweenness:m==='closeness'?a.closeness:a.pagerank;
+    const g=m=>m==='degree'?b.degree:m==='betweenness'?b.betweenness:m==='closeness'?b.closeness:b.pagerank;
+    return g(metric)-f(metric);
+  });
+  const top=sorted[0];
+  const maxV=metric==='degree'?top.degree:metric==='betweenness'?top.betweenness:metric==='closeness'?top.closeness:top.pagerank;
+  const rlist=document.getElementById('rlist');
+  rlist.innerHTML=sorted.map((n,i)=>{
+    const v=metric==='degree'?n.degree:metric==='betweenness'?n.betweenness:metric==='closeness'?n.closeness:n.pagerank;
+    const pct=maxV>0?v/maxV*100:0;
+    const disp=metric==='degree'?v:v.toFixed(3);
+    const cc=COMM[n.community]||{};
+    return `<div class="ritem" data-id="${n.id}">
+      <span class="rnum">${i+1}</span>
+      <div class="rdot" style="background:${cc.color}"></div>
+      <span class="rname">${n.id}</span>
+      <div class="rbar-bg"><div class="rbar-fill" style="width:${pct}%"></div></div>
+      <span class="rval">${disp}</span>
+    </div>`;
+  }).join('');
+  rlist.querySelectorAll('.ritem').forEach(item=>{
+    item.addEventListener('click',()=>{
+      const nd=nodes.find(n=>n.id===item.dataset.id);
+      if(nd){ highlightNode(nd); showCard(nd); }
+    });
+  });
+}
+
+document.getElementById('rtabs').addEventListener('click',e=>{
+  const btn=e.target.closest('.rtab');
+  if(!btn) return;
+  document.querySelectorAll('.rtab').forEach(b=>b.classList.remove('on'));
+  btn.classList.add('on');
+  renderRanking(btn.dataset.rank);
+});
+
+renderRanking('degree');
+</script>
+</body>
+</html>
